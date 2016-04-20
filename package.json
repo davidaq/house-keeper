@@ -1,0 +1,24 @@
+{
+  "name": "house-keeper",
+  "version": "0.0.1",
+  "description": "Deploy, update and run git hosted web application without pain.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/davidaq/house-keeper.git"
+  },
+  "keywords": [
+    "web",
+    "server",
+    "http"
+  ],
+  "author": "davidaq",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/davidaq/house-keeper/issues"
+  },
+  "homepage": "https://github.com/davidaq/house-keeper#readme"
+}

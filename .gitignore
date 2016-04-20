@@ -1,0 +1,5 @@
+node_modules/
+*.tmp
+*.swp
+*.bak
+.DS_Store
