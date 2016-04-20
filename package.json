@@ -4,7 +4,7 @@
   "description": "Deploy, update and run git hosted web application without pain.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "([ -d test ] || mkdir test) && cd test && node ../bin/house-keeper"
   },
   "repository": {
     "type": "git",
@@ -20,5 +20,14 @@
   "bugs": {
     "url": "https://github.com/davidaq/house-keeper/issues"
   },
-  "homepage": "https://github.com/davidaq/house-keeper#readme"
+  "homepage": "https://github.com/davidaq/house-keeper#readme",
+  "bin": {
+    "house-keeper": "bin/house-keeper.js"
+  },
+  "dependencies": {
+    "hapi": "^13.3.0",
+    "inert": "^3.2.0",
+    "yamljs": "^0.1.6",
+    "yar": "^7.0.0"
+  }
 }

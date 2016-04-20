@@ -1,0 +1,6 @@
+manager:
+    port: 3000
+    password: 0DPiKuNIrrVmD8IUCuw1hQxNqZc=
+server:
+    http_port: 80
+    https_port: 443
