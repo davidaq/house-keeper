@@ -1,14 +1,14 @@
 {
-  "name": "house-keeper",
+  "name": "housekeeper",
   "version": "0.0.1",
   "description": "Deploy, update and run git hosted web application without pain.",
   "main": "index.js",
   "scripts": {
-    "test": "([ -d test ] || mkdir test) && cd test && node ../bin/house-keeper"
+    "test": "([ -d test ] || mkdir test) && cd test && node ../bin/housekeeper"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/davidaq/house-keeper.git"
+    "url": "git+https://github.com/davidaq/housekeeper.git"
   },
   "keywords": [
     "web",
@@ -18,11 +18,11 @@
   "author": "davidaq",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/davidaq/house-keeper/issues"
+    "url": "https://github.com/davidaq/housekeeper/issues"
   },
-  "homepage": "https://github.com/davidaq/house-keeper#readme",
+  "homepage": "https://github.com/davidaq/housekeeper#readme",
   "bin": {
-    "house-keeper": "bin/house-keeper.js"
+    "housekeeper": "bin/housekeeper.js"
   },
   "dependencies": {
     "hapi": "^13.3.0",

@@ -1,5 +1,6 @@
 node_modules/
 test/
+_build/
 *.tmp
 *.swp
 *.bak
