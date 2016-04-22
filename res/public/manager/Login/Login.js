@@ -22,6 +22,8 @@ class Login extends React.Component {
         </Center>
     }
     login() {
+        if (!this.loginForm.value.password)
+            return this.loginForm.setError('password', {type:'warning', message:['Warning!','Empty password not allowed']});
         ajax('check-login', {password:this.loginForm.value.password})
             .then(result => {
                 auth.update().then(() => document.location.replace('#/'));

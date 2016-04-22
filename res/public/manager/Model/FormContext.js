@@ -92,9 +92,18 @@ class FormContext {
         return this;
     }
     alert(key, type='danger') {
-        return <div if={this.getError(key)} className={"alert alert-" + type}>
+        var msg = this.getError(key);
+        if (msg && typeof msg == 'object' && msg.type && msg.message) {
+            type = msg.type;
+            msg = msg.message;
+        }
+        if (Array.isArray(msg)) {
+            msg = msg.map(v => v + ' ');
+            msg[0] = <strong key={0}>{msg[0]}</strong>;
+        }
+        return <div if={msg} className={"alert alert-" + type}>
             <a className="close" onClick={() => this.setError(key)}><span aria-hidden="true">&times;</span></a>
-            {this.getError(key)}
+            {msg}
         </div>
     }
 }
