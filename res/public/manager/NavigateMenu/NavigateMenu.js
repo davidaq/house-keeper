@@ -32,6 +32,7 @@ class NavigateMenu extends React.Component {
                     </div>
                 </div>
             </div>
+            <br/><br/>
         </div>
     }
     logout() {

@@ -18,25 +18,37 @@ class Home extends React.Component {
                 <br/>
                 <Cases of={this.state.addType}>
                     <div if="git">
+                        <div className="well">
+                            The start script will be appended with " --port &lt;random port number&gt;"
+                            and a HTTP server is expected to startup on the given port. <br/>
+                            Each application will run in a dedicated directory created before first execution.
+                        </div>
                         <Group>
                             <Input ctx={this.addNewForm} name="name">Name</Input>
                         </Group>
                         <Group>
                             <Input ctx={this.addNewForm} name="git.repo">Repo url</Input>
-                            <Input placeholder="master" ctx={this.addNewForm} name="git.branch">Branch</Input>
+                            <Input defaultValue="master" ctx={this.addNewForm} name="git.branch">Branch</Input>
+                        </Group>
+                        <Group>
+                            <Input placeholder="No install script" defaultValue="npm install" ctx={this.addNewForm} name="git.compile">Compile script</Input>
+                            <Input defaultValue="node index.js" ctx={this.addNewForm} name="git.start">Start script</Input>
                         </Group>
                     </div>
                     <div if="proxy">
+                        <div className="well">
+                            Backend servers are expected to be HTTP servers as described in their configuration <i>(HTTPS backend servers are not expected)</i>.<br/>
+                            Multiple address can be seperated with "<b>;</b>", the application will act as a load balancer.
+                        </div>
                         <Group>
                             <Input ctx={this.addNewForm} name="name">Name</Input>
                         </Group>
                         <Group>
-                            <Input ctx={this.addNewForm} name="proxy.address">Address</Input>
-                            <Input placeholder="80" ctx={this.addNewForm} name="proxy.port">Port</Input>
+                            <Input placeholder='e.g. "127.0.0.1" or "192.168.100.1:8080"' full ctx={this.addNewForm} name="proxy.address">Addresses</Input>
                         </Group>
                         <Group>
-                            <Input placeholder="<same as address>" ctx={this.addNewForm} name="proxy.hostname">Host name</Input>
-                            <Input placeholder="/" ctx={this.addNewForm} name="proxy.path">Target path</Input>
+                            <Input placeholder="<Pass through>" ctx={this.addNewForm} name="proxy.hostname">Host name</Input>
+                            <Input defaultValue="/" ctx={this.addNewForm} name="proxy.path">Prefix path</Input>
                         </Group>
                     </div>
                 </Cases>
@@ -46,10 +58,58 @@ class Home extends React.Component {
                     <a className="btn btn-primary btn-block" onClick={this.addNew}>Add new application</a>
                 </Cases>
             </div>
-            <div className="loading" if={this.state.loading}/>
+            <Cases>
+                <div className="loading" if={this.state.loading}/>
+                <For each="item" of={this.state.list}>
+                    <div className="card" style={{padding:5}} key={item._id}>
+                        <div>
+                            <Cases of={item.type}>
+                                <i className="glyphicon glyphicon-cloud-download" if="git"/>
+                                <i className="glyphicon glyphicon-retweet" if="proxy"/>
+                            </Cases>
+                            &nbsp;
+                            <strong style={{fontSize:'1.3em'}}>{item.name}</strong>
+                            <i style={{float:'right'}}><small style={{color:'#777'}}>
+                                {({git:'Git repo','proxy':'Backend server'})[item.type]}
+                                &nbsp;-&nbsp;
+                                {item._id}
+                            </small></i>
+                        </div>
+                        <Cases of={item.type}>
+                            <div if="git" className="row">
+                                <div className="col-md-6 col-lg-4">
+                                    <label>Repo url:</label> {item.repo}
+                                </div>
+                                <div className="col-md-6 col-lg-4">
+                                    <label>Branch:</label> {item.branch}
+                                </div>
+                                <div className="col-sm-12">
+                                    <label>Compile Script:</label> {item.compile}
+                                </div>
+                                <div className="col-sm-12">
+                                    <label>Start Script:</label> {item.start}
+                                </div>
+                            </div>
+                            <div if="proxy" className="row">
+                                <div className="col-sm-12">
+                                    <label>Addresses:</label> {item.address}
+                                </div>
+                                <div className="col-md-6 col-lg-4">
+                                    <label>Host name:</label> {item.hostname || <i>Pass through</i>}
+                                </div>
+                                <div className="col-md-6 col-lg-4">
+                                    <label>Prefix path:</label> {item.path}
+                                </div>
+                            </div>
+                        </Cases>
+                        <Uninstall/>
+                    </div>
+                </For>
+            </Cases>
         </div>
     }
     addNew() {
+        this.addNewForm.errors = {};
         var req;
         req = this.addNewForm.value[this.state.addType];
         req.type = this.state.addType;
@@ -70,12 +130,11 @@ class Home extends React.Component {
             if (this.addNewForm.hasError())
                 return;
             req.port = req.port - 0 || 80;
-            req.hostname = req.hostname || req.address;
             req.path = req.path || '/';
         }
-        this.addNewForm.value = {git:{},proxy:{}};
         this.setState({adding:true});
         ajax('add-application', req).then(result => {
+            this.addNewForm.value = {git:{},proxy:{}};
             this.setState({adding:false});
             this.refresh();
         }).catch(err => {
@@ -84,7 +143,14 @@ class Home extends React.Component {
         });
     }
     refresh() {
-        this.setState({loading:false});
+        this.setState({loading:true});
+        ajax('list-application', {}).then(apps => {
+            var list = [];
+            for (var k of Object.keys(apps).sort()) {
+                list.push(apps[k]);
+            }
+            this.setState({loading:false, list});
+        });
     }
 }
 
@@ -93,12 +159,35 @@ function Group(props) {
 }
 
 function Input(props) {
-    var {children, ctx, name, ...other} = props;
+    var {children, ctx, name, defaultValue, ...other} = props;
     return <span>
         <label className="col-sm-2 control-label">{children}</label>
-        <div className="col-sm-4">
-            <input className="form-control" {...other} {...ctx.mixin(name)}/>
+        <div className={{"col-sm-4":!props.full,"col-sm-10":props.full}}>
+            <input className="form-control" {...other} {...ctx.mixin(name, defaultValue)}/>
             {ctx.alert(name)}
         </div>
     </span>
+}
+
+class Uninstall extends React.Component {
+    componentWillMount() {
+        this.setState({state:'rest'})
+    }
+    render() {
+        return <Cases of={this.state.state}>
+            <a className="btn btn-danger" onClick={this.firstClick} if="rest">Uninstall</a>
+            <a className="btn btn-warning disabled" if="delay">Yes I'm serious</a>
+            <a className="btn btn-warning" onClick={this.confirmed} if="active">Yes I'm serious</a>
+            <a className="btn btn-info disabled" if="confirmed">Please wait</a>
+        </Cases>
+    }
+    firstClick() {
+        this.setState({state:'delay'});
+        setTimeout(() => this.setState({state:'active'}), 700);
+        this.rDelay = setTimeout(() => this.setState({state:'rest'}), 3000);
+    }
+    confirmed() {
+        clearTimeout(this.rDelay);
+        this.setState({state:'confirmed'});
+    }
 }
