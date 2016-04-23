@@ -4,6 +4,7 @@ class FormContext {
         this.value = defaultVal || {};
         this.errors = {};
         this.children = {};
+        this.changing = '';
     }
     setValue(key, val) {
         var item = trace(this.value, key, true);
@@ -41,14 +42,18 @@ class FormContext {
                         throw error;
                 }
             }
+            this.changing = key;
             this.setValue(key, value);
         };
     }
     setError(key, val) {
-        var item = trace(this.errors, key, true);
         if (typeof val == 'undefined') {
+            var item = trace(this.errors, key);
+            if (!item)
+                return;
             delete item.obj[item.key];
         } else {
+            var item = trace(this.errors, key, true);
             item.obj[item.key] = val;
         }
         this.signal();
@@ -58,6 +63,23 @@ class FormContext {
         if (item)
             return item.obj[item.key];
     }
+    hasError() {
+        return this._hasError(this.errors);
+    }
+    _hasError(errors) {
+        if (!errors) {
+            return false;
+        }
+        if (typeof errors == 'object') {
+            for (var v of errors) {
+                if (this._hasError(v)) {
+                    return true;
+                }
+            }
+        } else {
+            return true;
+        }
+    }
     signal() {
         if (typeof this.onChange == 'function') {
             this.onChange({target:this});
@@ -66,7 +88,8 @@ class FormContext {
     mixin(key, defaultVal, callback) {
         return {
             value: this.getValue(key, defaultVal),
-            onChange: this.handleChange(key, callback)
+            onChange: this.handleChange(key, callback),
+            isChanging: this.changing == key
         }
     }
     bind(target, key) {
@@ -116,13 +139,14 @@ function trace(obj, path, forceExists) {
         var key = path[i];
         if (key in obj) {
             obj = obj[key];
-        } else if (forceExists && i < path.length) {
+        } else if (forceExists) {
             var nextKey = path[i + 1];
             if (isFinite(nextKey) && nextKey - 0 >= 0) {
                 obj[key] = [];
             } else {
                 obj[key] = {};
             }
+            obj = obj[key];
         } else {
             return null;
         }
