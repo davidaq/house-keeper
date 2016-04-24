@@ -1,7 +1,8 @@
 import 'Model/FormContext';
 import 'ajax';
+import {Input, Group} from 'UI/Form';
 
-class Home extends React.Component {
+class Applications extends React.Component {
     static active = 'applications'
     componentWillMount() {
         this.setState({addType:'git'});
@@ -60,7 +61,7 @@ class Home extends React.Component {
             </div>
             <Cases>
                 <div className="loading" if={this.state.loading}/>
-                <For each="item" of={this.state.list}>
+                <For each="item" index="index" of={this.state.list}>
                     <div className="card" style={{padding:5}} key={item._id}>
                         <div>
                             <Cases of={item.type}>
@@ -102,7 +103,7 @@ class Home extends React.Component {
                                 </div>
                             </div>
                         </Cases>
-                        <Uninstall/>
+                        <Uninstall onClick={() => this.remove(index)}/>
                     </div>
                 </For>
             </Cases>
@@ -142,6 +143,16 @@ class Home extends React.Component {
             this.addNewForm.setError('general', err);
         });
     }
+    remove(index) {
+        var item = this.state.list[index];
+        if (item) {
+            this.state.list.splice(index, 1);
+            ajax('remove-application', {name:item.name, _id:item._id})
+                .then(r => {
+                    this.refresh();
+                });
+        }
+    }
     refresh() {
         this.setState({loading:true});
         ajax('list-application', {}).then(apps => {
@@ -152,21 +163,6 @@ class Home extends React.Component {
             this.setState({loading:false, list});
         });
     }
-}
-
-function Group(props) {
-    return <div className="form-group">{props.children}</div>
-}
-
-function Input(props) {
-    var {children, ctx, name, defaultValue, ...other} = props;
-    return <span>
-        <label className="col-sm-2 control-label">{children}</label>
-        <div className={{"col-sm-4":!props.full,"col-sm-10":props.full}}>
-            <input className="form-control" {...other} {...ctx.mixin(name, defaultValue)}/>
-            {ctx.alert(name)}
-        </div>
-    </span>
 }
 
 class Uninstall extends React.Component {
@@ -189,5 +185,6 @@ class Uninstall extends React.Component {
     confirmed() {
         clearTimeout(this.rDelay);
         this.setState({state:'confirmed'});
+        this.props.onClick && this.props.onClick({target:this});
     }
 }

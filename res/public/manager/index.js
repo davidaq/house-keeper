@@ -3,7 +3,9 @@ import './auth';
 import './GlobalStyle';
 import './Login';
 import './NavigateMenu';
-import './Home';
+import './Applications';
+import './Settings';
+import './NotFound';
 
 var body = document.createElement('div');
 $(body).html('Loading...');
@@ -16,8 +18,10 @@ auth.update().then(function() {
     ReactDOM.render(<Router>
         <Route path="/login" component={Login}/>
         <Route path="/" component={NavigateMenu}>
-            <IndexRoute component={Home}/>
-            <Route path="*" component={Home}/>
+            <IndexRoute component={Applications}/>
+            <Route path="applications" component={Applications}/>
+            <Route path="settings" component={Settings}/>
+            <Route path="*" component={NotFound}/>
         </Route>
     </Router>, body);
 });

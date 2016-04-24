@@ -4,3 +4,6 @@ manager:
 server:
     http_port: 80
     https_port: 443
+ssl:
+    key:
+    crt:
