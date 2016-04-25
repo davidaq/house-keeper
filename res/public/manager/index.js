@@ -4,11 +4,13 @@ import './GlobalStyle';
 import './Login';
 import './NavigateMenu';
 import './Applications';
+import './Mounts';
+import './EditMount';
 import './Settings';
 import './NotFound';
 
 var body = document.createElement('div');
-$(body).html('Loading...');
+$(body).html('<div style="padding-top:20%;text-align:center">Loading...</div>');
 $(body).css({height:'100%'});
 $('body').append(body);
 $('html').addClass(GlobalStyle);
@@ -20,6 +22,10 @@ auth.update().then(function() {
         <Route path="/" component={NavigateMenu}>
             <IndexRoute component={Applications}/>
             <Route path="applications" component={Applications}/>
+            <Route path="mounts">
+                <IndexRoute component={Mounts}/>
+                <Route path=":id" component={EditMount}/>
+            </Route>
             <Route path="settings" component={Settings}/>
             <Route path="*" component={NotFound}/>
         </Route>

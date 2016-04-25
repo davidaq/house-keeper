@@ -155,7 +155,7 @@ class Applications extends React.Component {
     }
     refresh() {
         this.setState({loading:true});
-        ajax('list-application', {}).then(apps => {
+        ajax('get-application', {}).then(apps => {
             var list = [];
             for (var k of Object.keys(apps).sort()) {
                 list.push(apps[k]);

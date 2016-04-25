@@ -15,9 +15,6 @@ class Settings extends React.Component {
     }
     render() {
         return <div>
-            <div className="alert alert-warning">
-                <b>Beware!</b> Housekeeper will restart when changing the settings. The server may become unvailable for a while.
-            </div>
             <Cases>
                 <div className="loading" if={this.state.loading}/>
                 <div className="alert alert-danger" if={this.state.error}>
@@ -53,6 +50,11 @@ class Settings extends React.Component {
                     </Cases>
                 </div>
             </Cases>
+            <br/>
+            <div className="alert alert-warning">
+                <b>Beware!</b> Housekeeper will restart when saving the changes and service will become unvailable for a while. <br/>
+                The page will refresh automatically after about 3 seconds when successfully saved, try reloading manuelly if page failed to load.
+            </div>
         </div>
     }
     save() {
