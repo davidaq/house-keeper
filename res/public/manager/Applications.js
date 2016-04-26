@@ -32,7 +32,7 @@ class Applications extends React.Component {
                             <Input defaultValue="master" ctx={this.addNewForm} name="git.branch">Branch</Input>
                         </Group>
                         <Group>
-                            <Input placeholder="No install script" defaultValue="npm install" ctx={this.addNewForm} name="git.compile">Compile script</Input>
+                            <Input placeholder="No install script" defaultValue="npm install" ctx={this.addNewForm} name="git.build">Build script</Input>
                             <Input defaultValue="node index.js" ctx={this.addNewForm} name="git.start">Start script</Input>
                         </Group>
                     </div>
@@ -45,11 +45,11 @@ class Applications extends React.Component {
                             <Input ctx={this.addNewForm} name="name">Name</Input>
                         </Group>
                         <Group>
-                            <Input placeholder='e.g. "127.0.0.1" or "192.168.100.1:8080"' full ctx={this.addNewForm} name="proxy.address">Addresses</Input>
+                            <Input placeholder='e.g. "http://127.0.0.1/" or "https://192.168.100.1:8080/myapp/"' full ctx={this.addNewForm} name="proxy.url">Base urls</Input>
                         </Group>
                         <Group>
                             <Input placeholder="<Pass through>" ctx={this.addNewForm} name="proxy.hostname">Host name</Input>
-                            <Input defaultValue="/" ctx={this.addNewForm} name="proxy.path">Prefix path</Input>
+                            <Input placeholder="<Stateless>" ctx={this.addNewForm} name="proxy.cookie">Session cookie</Input>
                         </Group>
                     </div>
                 </Cases>
@@ -85,7 +85,7 @@ class Applications extends React.Component {
                                     <label>Branch:</label> {item.branch}
                                 </div>
                                 <div className="col-sm-12">
-                                    <label>Compile Script:</label> {item.compile}
+                                    <label>Build Script:</label> {item.build}
                                 </div>
                                 <div className="col-sm-12">
                                     <label>Start Script:</label> {item.start}

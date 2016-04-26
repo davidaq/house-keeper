@@ -21,7 +21,7 @@ class NavigateMenu extends React.Component {
             <div className="container">
                 <div className="row">
                     <div className="col-md-3 col-lg-2">
-                        <ul className="nav nav-pills nav-stacked">
+                        <ul className="sidemenu nav nav-pills nav-stacked">
                             <NavItem active={active}>Applications</NavItem>
                             <NavItem active={active}>Mounts</NavItem>
                             <NavItem active={active}>Settings</NavItem>

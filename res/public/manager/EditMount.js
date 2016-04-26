@@ -57,6 +57,9 @@ class EditMount extends React.Component {
         if (!this.form.value.path.match(/^\/(.*\/)?$/)) {
             this.form.setError('path', 'Path must start and end with "/"');
         }
+        if (!this.form.value.app) {
+            this.form.setError('app', 'Must select one');
+        }
         if (!this.form.hasError()) {
             this.setState({saving:true});
             ajax('set-mount', this.form.value).then(r => {

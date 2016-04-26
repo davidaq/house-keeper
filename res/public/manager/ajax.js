@@ -3,7 +3,7 @@ function ajax(path, params = {}) {
     return new Promise(function(resolve, reject) {
         $.ajax({
             method:'post',
-            url: '/' + path,
+            url: path,
             contentType: 'application/json',
             data: JSON.stringify(params),
             dataType: 'json',
