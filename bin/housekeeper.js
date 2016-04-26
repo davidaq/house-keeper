@@ -1,16 +1,18 @@
 #!/usr/bin/env node
 
-var cp = require('child_process');
+require('../lib/cli');
 
-var child;
+// var cp = require('child_process');
 
-function startProcess() {
-    child = cp.fork('../lib/cli');
-    child.on('close', code => {
-        if (code) {
-            setTimeout(startProcess, 500);
-        }
-    });
-}
+// var child;
 
-startProcess();
+// function startProcess() {
+//     child = cp.fork('../lib/cli');
+//     child.on('close', code => {
+//         if (code) {
+//             setTimeout(startProcess, 500);
+//         }
+//     });
+// }
+
+// startProcess();
