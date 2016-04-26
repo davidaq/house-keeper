@@ -39,7 +39,7 @@ class Applications extends React.Component {
                     <div if="proxy">
                         <div className="well">
                             Backend servers are expected to be HTTP servers as described in their configuration <i>(HTTPS backend servers are not expected)</i>.<br/>
-                            Multiple address can be seperated with "<b>;</b>", the application will act as a load balancer.
+                            Multiple url address can be seperated with "<b>;</b>", the application will act as a load balancer.
                         </div>
                         <Group>
                             <Input ctx={this.addNewForm} name="name">Name</Input>
@@ -93,13 +93,13 @@ class Applications extends React.Component {
                             </div>
                             <div if="proxy" className="row">
                                 <div className="col-sm-12">
-                                    <label>Addresses:</label> {item.address}
+                                    <label>Base urls:</label> {item.url}
                                 </div>
                                 <div className="col-md-6 col-lg-4">
                                     <label>Host name:</label> {item.hostname || <i>Pass through</i>}
                                 </div>
                                 <div className="col-md-6 col-lg-4">
-                                    <label>Prefix path:</label> {item.path}
+                                    <label>Session cookie:</label> {item.cookie || <i>Stateless</i>}
                                 </div>
                             </div>
                         </Cases>
@@ -124,14 +124,10 @@ class Applications extends React.Component {
                 return;
             req.branch = req.branch || 'master';
         } else if (req.type == 'proxy') {
-            if (!req.address)
-                this.addNewForm.setError('proxy.address', 'Address is not optional');
-            if (req.port && (!isFinite(req.port) || req.port < 1 || req.port > 65534))
-                this.addNewForm.setError('proxy.port', 'Port is not valid');
+            if (!req.url)
+                this.addNewForm.setError('proxy.url', 'Base url is not optional');
             if (this.addNewForm.hasError())
                 return;
-            req.port = req.port - 0 || 80;
-            req.path = req.path || '/';
         }
         this.setState({adding:true});
         ajax('add-application', req).then(result => {
