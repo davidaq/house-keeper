@@ -20,26 +20,28 @@ class Applications extends React.Component {
                 <Cases of={this.state.addType}>
                     <div if="git">
                         <div className="well">
-                            The start script will be appended with " --port &lt;random port number&gt;"
-                            and a HTTP server is expected to startup on the given port. <br/>
-                            Each application will run in a dedicated directory created before first execution.
+                            The run script should be a vaild NodeJS runnable JS file, and will be run in a dedicated directory rather than the project folder. <br/>
+                            Command line arguments will be passed as " --port &lt;random number&gt; [--first_install] [--after-update]",
+                            and a HTTP <i><b>(Not HTTPS)</b></i> server is expected to start on the given port. <br/>
+                            <b>Pls Note:</b> Do not implement daemonize yourself, the run script is expected to live along with the HTTP server.
                         </div>
                         <Group>
                             <Input ctx={this.addNewForm} name="name">Name</Input>
                         </Group>
                         <Group>
-                            <Input ctx={this.addNewForm} name="git.repo">Repo url</Input>
-                            <Input defaultValue="master" ctx={this.addNewForm} name="git.branch">Branch</Input>
+                            <Input ctx={this.addNewForm} name="git.repo" full>Repo url</Input>
                         </Group>
                         <Group>
-                            <Input placeholder="No install script" defaultValue="npm install" ctx={this.addNewForm} name="git.build">Build script</Input>
-                            <Input defaultValue="node index.js" ctx={this.addNewForm} name="git.start">Start script</Input>
+                            <Input defaultValue="master" ctx={this.addNewForm} name="git.branch">Branch</Input>
+                            <Input defaultValue="index.js" ctx={this.addNewForm} name="git.run">Run script</Input>
                         </Group>
                     </div>
                     <div if="proxy">
                         <div className="well">
-                            Backend servers are expected to be HTTP servers as described in their configuration <i>(HTTPS backend servers are not expected)</i>.<br/>
-                            Multiple url address can be seperated with "<b>;</b>", the application will act as a load balancer.
+                            Backend servers are expected to be HTTP servers as described in their configuration
+                            (<i>avoid using HTTPS backend servers as they may not work properly due to SSL certificate issues</i>).<br/>
+                            Multiple base url address may be seperated with "<b>;</b>", the application will act as a load balancer.
+                            You may provide the cookie name your server is using to implement session so that requests from the same client will go to the same server.
                         </div>
                         <Group>
                             <Input ctx={this.addNewForm} name="name">Name</Input>
@@ -78,17 +80,14 @@ class Applications extends React.Component {
                         </div>
                         <Cases of={item.type}>
                             <div if="git" className="row">
-                                <div className="col-md-6 col-lg-4">
+                                <div className="col-sm-12">
                                     <label>Repo url:</label> {item.repo}
                                 </div>
                                 <div className="col-md-6 col-lg-4">
                                     <label>Branch:</label> {item.branch}
                                 </div>
-                                <div className="col-sm-12">
-                                    <label>Build Script:</label> {item.build}
-                                </div>
-                                <div className="col-sm-12">
-                                    <label>Start Script:</label> {item.start}
+                                <div className="col-md-6 col-lg-4">
+                                    <label>Run Script:</label> {item.run}
                                 </div>
                             </div>
                             <div if="proxy" className="row">
@@ -103,7 +102,10 @@ class Applications extends React.Component {
                                 </div>
                             </div>
                         </Cases>
-                        <Uninstall onClick={() => this.remove(index)}/>
+                        <div className="btn-group">
+                            <Uninstall onClick={() => this.remove(index)}/>
+                            <a className="btn btn-primary" if={item.type == 'git'}>Update</a>
+                        </div>
                     </div>
                 </For>
             </Cases>

@@ -20,7 +20,7 @@ class Settings extends React.Component {
                 <div className="alert alert-danger" if={this.state.error}>
                     {this.state.error}
                 </div>
-                <div className="card form-horizontal" style={{padding:'1em'}}>
+                <div className="card form-horizontal" style={{padding:5}}>
                     <label>Manager Settings</label>
                     <Group>
                         <Input ctx={this.settingsForm} name="manager.port">Port</Input>
