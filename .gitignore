@@ -4,4 +4,5 @@ _build/
 *.tmp
 *.swp
 *.bak
+*.log
 .DS_Store
