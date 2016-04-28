@@ -46,7 +46,7 @@ function stop() {
 	return fs.readFile('pid', 'utf-8')
 		.then(pid => {
 			try {
-           		process.kill(pid - 0);
+           		process.kill(pid - 0, 'SIGINT');
 				console.log('Process ' + pid + ' killed');
 			} catch(err) {
 				console.log('Process ' + pid + ' may not exist anymore');
