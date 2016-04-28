@@ -5,9 +5,27 @@ import {Input, Group} from 'UI/Form';
 class Applications extends React.Component {
     static active = 'applications'
     componentWillMount() {
-        this.setState({addType:'git'});
+        this.setState({addType:'git', status:{}});
         this.addNewForm = new FormContext({git:{},proxy:{}}).bind(this);
         this.refresh();
+        var loadingStatus = false;
+        const loadStatus = () => {
+            if (loadingStatus)
+                return;
+            loadingStatus = true;
+            ajax('get-application-status').then(result => {
+                if (this.statusInterval) {
+                    loadingStatus = false;
+                    this.setState({status:result});                    
+                }
+            }).catch(() => loadingStatus = false);
+        };
+        loadStatus();
+        this.statusInterval = setInterval(loadStatus, 3000);
+    }
+    componentWillUnmount() {
+        clearInterval(this.statusInterval);
+        this.statusInterval = null;
     }
     render() {
         return <div className="container-fluid">
@@ -92,6 +110,9 @@ class Applications extends React.Component {
                                 </div>
                                 <div className="col-md-6 col-lg-8">
                                     <label>Extra args:</label> {item.args}
+                                </div>
+                                <div className="col-md-12 col-lg-6">
+                                    <label>Status:</label> {this.state.status[item._id] || <i>...</i>}
                                 </div>
                             </div>
                             <div if="proxy" className="row">
