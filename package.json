@@ -31,6 +31,7 @@
     "inert": "^3.2.0",
     "promise-debounce": "^1.0.1",
     "shortid": "^2.2.6",
+    "splitargs": "0.0.7",
     "yamljs": "^0.1.6",
     "yar": "^7.0.0"
   }

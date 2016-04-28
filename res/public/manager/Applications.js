@@ -21,19 +21,20 @@ class Applications extends React.Component {
                     <div if="git">
                         <div className="well">
                             The run script should be a vaild NodeJS runnable JS file, and will be run in a dedicated directory rather than the project folder. <br/>
-                            Command line arguments will be passed as " --port &lt;random number&gt; [--first_install] [--after-update]",
-                            and a HTTP <i><b>(Not HTTPS)</b></i> server is expected to start on the given port. <br/>
+                            Command line arguments will be passed as " --port &lt;random port number&gt; &lt;extra args&gt;",
+                            and a HTTP <i><b>(Not HTTPS)</b></i> server listening on the given port is expected to start. <br/>
                             <b>Pls Note:</b> Do not implement daemonize yourself, the run script is expected to live along with the HTTP server.
                         </div>
                         <Group>
                             <Input ctx={this.addNewForm} name="name">Name</Input>
                         </Group>
                         <Group>
-                            <Input ctx={this.addNewForm} name="git.repo" full>Repo url</Input>
+                            <Input ctx={this.addNewForm} name="git.repo">Repo url</Input>
+                            <Input defaultValue="master" ctx={this.addNewForm} name="git.branch">Branch</Input>
                         </Group>
                         <Group>
-                            <Input defaultValue="master" ctx={this.addNewForm} name="git.branch">Branch</Input>
                             <Input defaultValue="index.js" ctx={this.addNewForm} name="git.run">Run script</Input>
+                            <Input defaultValue="--housekeeper" ctx={this.addNewForm} name="git.args">Extra args</Input>
                         </Group>
                     </div>
                     <div if="proxy">
@@ -80,14 +81,17 @@ class Applications extends React.Component {
                         </div>
                         <Cases of={item.type}>
                             <div if="git" className="row">
-                                <div className="col-sm-12">
+                                <div className="col-md-9 col-lg-8">
                                     <label>Repo url:</label> {item.repo}
                                 </div>
-                                <div className="col-md-6 col-lg-4">
+                                <div className="col-md-3 col-lg-4">
                                     <label>Branch:</label> {item.branch}
                                 </div>
                                 <div className="col-md-6 col-lg-4">
                                     <label>Run Script:</label> {item.run}
+                                </div>
+                                <div className="col-md-6 col-lg-8">
+                                    <label>Extra args:</label> {item.args}
                                 </div>
                             </div>
                             <div if="proxy" className="row">
