@@ -28,6 +28,7 @@ class Applications extends React.Component {
         this.statusInterval = null;
     }
     render() {
+        const now = new Date().getTime();
         return <div className="container-fluid">
             <div className="card form-horizontal" style={{padding:5}}>
                 <ul className="nav nav-tabs">
@@ -98,39 +99,82 @@ class Applications extends React.Component {
                             </small></i>
                         </div>
                         <Cases of={item.type}>
-                            <div if="git" className="row">
-                                <div className="col-md-9 col-lg-8">
-                                    <label>Repo url:</label> {item.repo}
+                            <Cases if="git">
+                                <div if={item._modify} className="form-horizontal">
+                                    <Group>
+                                        <label className="col-sm-2 control-label">Repo url</label>
+                                        <div className="col-sm-4">
+                                            <input className="form-control" readOnly value={item.repo}/>
+                                        </div>
+                                        <Input ctx={item._modify} name="branch">Branch</Input>
+                                    </Group>
+                                    <Group>
+                                        <Input ctx={item._modify} name="run">Run script</Input>
+                                        <Input ctx={item._modify} name="args">Extra args</Input>
+                                    </Group>
                                 </div>
-                                <div className="col-md-3 col-lg-4">
-                                    <label>Branch:</label> {item.branch}
+                                <div className="row">
+                                    <div className="col-md-9 col-lg-8">
+                                        <label>Repo url:</label> {item.repo}
+                                    </div>
+                                    <div className="col-md-3 col-lg-4">
+                                        <label>Branch:</label> {item.branch}
+                                    </div>
+                                    <div className="col-md-6 col-lg-4">
+                                        <label>Run Script:</label> {item.run}
+                                    </div>
+                                    <div className="col-md-6 col-lg-8">
+                                        <label>Extra args:</label> {item.args}
+                                    </div>
+                                    <div className="col-md-12 col-lg-6">
+                                        <label>Status:</label> {this.state.status[item._id] || <i>...</i>}
+                                    </div>
                                 </div>
-                                <div className="col-md-6 col-lg-4">
-                                    <label>Run Script:</label> {item.run}
+                            </Cases>
+                            <Cases if="proxy">
+                                <div if={item._modify} className="form-horizontal">
+                                    <Group>
+                                        <Input ctx={item._modify} name="url" full>Base urls</Input>
+                                    </Group>
+                                    <Group>
+                                        <Input placeholder="<Pass through>" ctx={item._modify} name="hostname">Host name</Input>
+                                        <Input placeholder="<Stateless>" ctx={item._modify} name="cookie">Session cookie</Input>
+                                    </Group>
                                 </div>
-                                <div className="col-md-6 col-lg-8">
-                                    <label>Extra args:</label> {item.args}
+                                <div className="row">
+                                    <div className="col-sm-12">
+                                        <label>Base urls:</label> {item.url}
+                                    </div>
+                                    <div className="col-md-6 col-lg-4">
+                                        <label>Host name:</label> {item.hostname || <i>Pass through</i>}
+                                    </div>
+                                    <div className="col-md-6 col-lg-4">
+                                        <label>Session cookie:</label> {item.cookie || <i>Stateless</i>}
+                                    </div>
                                 </div>
-                                <div className="col-md-12 col-lg-6">
-                                    <label>Status:</label> {this.state.status[item._id] || <i>...</i>}
-                                </div>
+                            </Cases>
+                        </Cases>
+                        <Cases>
+                            <div if={item._modify} className="btn-group">
+                                <a className="btn btn-primary" onClick={() => this.saveModify(item)}>Save</a>
+                                <a className="btn btn-default" onClick={() => this.cancelModify(item)}>Cancel</a>
                             </div>
-                            <div if="proxy" className="row">
-                                <div className="col-sm-12">
-                                    <label>Base urls:</label> {item.url}
+                            <div className="row" style={{padding:0, margin:0}}>
+                                <div className="btn-group pull-left">
+                                    <Cases if={item.type == 'git'}>
+                                        <a className="btn btn-primary disabled" if={now - (item._lastUpdate || 0) < 3000}>Update</a>
+                                        <a className="btn btn-primary" onClick={() => this.update(item)}>Update</a>
+                                    </Cases>
+                                    <Cases>
+                                        <a className="btn btn-default disabled" if={now - (item._lastUpdate || 0) < 3000}>Modify</a>
+                                        <a className="btn btn-default" onClick={() => this.modify(item)}>Modify</a>
+                                    </Cases>
                                 </div>
-                                <div className="col-md-6 col-lg-4">
-                                    <label>Host name:</label> {item.hostname || <i>Pass through</i>}
-                                </div>
-                                <div className="col-md-6 col-lg-4">
-                                    <label>Session cookie:</label> {item.cookie || <i>Stateless</i>}
+                                <div className="btn-group pull-right">
+                                    <Uninstall onClick={() => this.remove(index)}/>
                                 </div>
                             </div>
                         </Cases>
-                        <div className="btn-group">
-                            <Uninstall onClick={() => this.remove(index)}/>
-                            <a className="btn btn-primary" if={item.type == 'git'}>Update</a>
-                        </div>
                     </div>
                 </For>
             </Cases>
@@ -185,6 +229,36 @@ class Applications extends React.Component {
             }
             this.setState({loading:false, list});
         });
+    }
+    update(item) {
+        item._lastUpdate = new Date().getTime();
+        this.forceUpdate();
+        ajax('update-application', {name:item.name});
+    }
+    modify(item) {
+        var init = {};
+        for (var k in item) {
+            if (k.substr(0, 1) != '_') {
+                init[k] = item[k];
+            }
+        }
+        item._modify = new FormContext(init).bind(this);
+        this.forceUpdate();
+    }
+    saveModify(item) {
+        ajax('update-application', item._modify.value);
+        for (var k in item._modify.value) {
+            if (k.substr(0, 1) != '_') {
+                item[k] = item._modify.value[k];
+            }
+        }
+        delete item._modify;
+        item._lastUpdate = new Date().getTime();
+        this.forceUpdate();
+    }
+    cancelModify(item) {
+        delete item._modify;
+        this.forceUpdate();
     }
 }
 
