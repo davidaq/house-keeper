@@ -16,7 +16,7 @@ fs.exists('package.json').then(exists => {
 }).then(() => {
 	if (process.argv[3] !== 'keepdir')
 		process.chdir('housekeeper');
-	switch(process.argv[2] || 'run') {
+	switch(process.argv[2]) {
 	case 'start':
 		daemon.start();
 		break;
@@ -30,10 +30,6 @@ fs.exists('package.json').then(exists => {
 		daemon.guard();
 		break;
 	case 'run':
-		if (!process.argv[2]) {
-			console.log('You may run `housekeeper start` to start daemonized.');
-			console.log('Run `housekeeper help` for more information.\n\n');
-		}
 		require('../lib/startup');
 		break;
 	default:
