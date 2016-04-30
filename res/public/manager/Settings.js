@@ -62,7 +62,7 @@ class Settings extends React.Component {
         var redirect = ((val.ssl.key && val.ssl.crt) ? 'https' : 'http') + '://' + document.location.hostname + ':' + val.manager.port + '/#/settings';
         this.setState({saving:true});
         ajax('set-settings', val).then(r => {
-            setInterval(() => {
+            setTimeout(() => {
                 document.location.replace(redirect);
             }, 3000);
         }).catch(e => {
