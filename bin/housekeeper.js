@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 const fs = require('fs-promise');
 const path = require('path');
+const daemon = require('../lib/daemon');
 
 fs.exists('package.json').then(exists => {
 	if (exists) {
@@ -16,13 +17,16 @@ fs.exists('package.json').then(exists => {
 	process.chdir('housekeeper');
 	switch(process.argv[2] || 'run') {
 	case 'start':
-		require('../lib/daemon-cli');
+		daemon.start();
 		break;
 	case 'stop':
-		stop();
+		daemon.stop();
 		break;
 	case 'restart':
-		stop().then(() => require('../lib/daemon-cli'));
+		daemon.stop().then(() => daemon.start());
+		break;
+	case 'guard':
+		daemon.guard();
 		break;
 	case 'run':
 		if (!process.argv[2]) {
@@ -41,19 +45,3 @@ fs.exists('package.json').then(exists => {
 }).catch(err => {
 	console.log(err.stack || err.message || err);
 });
-
-function stop() {
-	return fs.readFile('pid', 'utf-8')
-		.then(pid => {
-			try {
-           		process.kill(pid - 0, 'SIGINT');
-				console.log('Process ' + pid + ' killed');
-			} catch(err) {
-				console.log('Process ' + pid + ' may not exist anymore');
-			}
-            return fs.unlink('pid').catch(err => null)
-		})
-		.catch(err => {
-			console.log('No pid file found');
-		})
-}
