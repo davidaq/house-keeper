@@ -1,4 +1,4 @@
 Housekeeper
 ============
 
-An simple utility to help setup web servers.
+Deploy, compose and update your web application from a web console.
