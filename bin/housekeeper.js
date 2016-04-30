@@ -30,7 +30,7 @@ fs.exists('package.json').then(exists => {
 		daemon.guard();
 		break;
 	case 'run':
-		require('../lib/startup');
+		daemon.check().then(() => require('../lib/startup'));
 		break;
 	default:
 		console.log('Run with the following command:');
