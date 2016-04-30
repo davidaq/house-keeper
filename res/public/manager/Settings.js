@@ -65,6 +65,9 @@ class Settings extends React.Component {
             setTimeout(() => {
                 document.location.replace(redirect);
             }, 3000);
+            setTimeout(() => {
+                document.location.reload();
+            }, 3300);
         }).catch(e => {
             for (var k in e) {
                 this.settingsForm.setError(k, e[k]);
