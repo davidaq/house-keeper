@@ -1,6 +1,6 @@
 {
   "name": "housekeeper",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Deploy, update and run git hosted web application without pain.",
   "main": "index.js",
   "scripts": {
