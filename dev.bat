@@ -1,3 +1,3 @@
 mkdir test
 cd test
-nodemon -w ../lib ../bin/housekeeper.js
+nodemon -w ../lib ../bin/housekeeper.js run
