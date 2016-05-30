@@ -63,6 +63,9 @@ class Applications extends React.Component {
                                         <Input ctx={item._modify} placeholder="serve static" name="run">Run script</Input>
                                         <Input ctx={item._modify} name="args">Extra args</Input>
                                     </Group>
+                                    <Group>
+                                        <Input ctx={item._modify} placeholder="./" name="wdir">App dir</Input>
+                                    </Group>
                                 </div>
                                 <div className="row">
                                     <div className="col-md-9 col-lg-8">
@@ -76,6 +79,9 @@ class Applications extends React.Component {
                                     </div>
                                     <div className="col-md-6 col-lg-8">
                                         <label>Extra args:</label> {item.args}
+                                    </div>
+                                    <div className="col-md-6 col-lg-8">
+                                        <label>App Directory:</label> {item.wdir || './'}
                                     </div>
                                     <div className="col-md-12 col-lg-6">
                                         <label>Status:</label> {this.state.status[item._id] || <i>...</i>}
@@ -98,6 +104,9 @@ class Applications extends React.Component {
                                         <Input ctx={item._modify} name="username">Username</Input>
                                         <Input ctx={item._modify} name="password" type="password">Password</Input>
                                     </Group>
+                                    <Group>
+                                        <Input ctx={item._modify} placeholder="./" name="wdir">App dir</Input>
+                                    </Group>
                                 </div>
                                 <div className="row">
                                     <div className="col-md-12">
@@ -108,6 +117,9 @@ class Applications extends React.Component {
                                     </div>
                                     <div className="col-md-6 col-lg-8">
                                         <label>Extra args:</label> {item.args}
+                                    </div>
+                                    <div className="col-md-6 col-lg-8">
+                                        <label>App Directory:</label> {item.wdir || './'}
                                     </div>
                                     <div className="col-md-12 col-lg-6">
                                         <label>Status:</label> {this.state.status[item._id] || <i>...</i>}
@@ -166,8 +178,8 @@ class Applications extends React.Component {
                     Add New Application
                 </strong>
                 <ul className="nav nav-tabs">
-                    <li className={{active:this.state.addType == 'git'}}><a onClick={() => this.setState({addType:'git'})}>Git</a></li>
                     <li className={{active:this.state.addType == 'svn'}}><a onClick={() => this.setState({addType:'svn'})}>SVN</a></li>
+                    <li className={{active:this.state.addType == 'git'}}><a onClick={() => this.setState({addType:'git'})}>Git</a></li>
                     <li if={false} className={{active:this.state.addType == 'receiver'}}><a onClick={() => this.setState({addType:'receiver'})}>Receiver</a></li>
                     <li className={{active:this.state.addType == 'proxy'}}><a onClick={() => this.setState({addType:'proxy'})}>Backend server</a></li>
                 </ul>
@@ -192,6 +204,9 @@ class Applications extends React.Component {
                             <Input placeholder="serve static" ctx={this.addNewForm} name="git.run">Run script</Input>
                             <Input ctx={this.addNewForm} name="git.args">Extra args</Input>
                         </Group>
+                        <Group>
+                            <Input ctx={this.addNewForm} placeholder="./" name="git.wdir">App dir</Input>
+                        </Group>
                     </div>
                     <div if="svn">
                         <div className="well">
@@ -214,6 +229,9 @@ class Applications extends React.Component {
                         <Group>
                             <Input ctx={this.addNewForm} name="svn.username">Username</Input>
                             <Input ctx={this.addNewForm} name="svn.password" type="password">Password</Input>
+                        </Group>
+                        <Group>
+                            <Input ctx={this.addNewForm} placeholder="./" name="svn.wdir">App dir</Input>
                         </Group>
                     </div>
                     <div if="receiver">
