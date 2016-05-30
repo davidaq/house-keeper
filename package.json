@@ -1,6 +1,6 @@
 {
   "name": "housekeeper",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "Deploy, update and run git hosted web application without pain.",
   "main": "index.js",
   "scripts": {
@@ -25,14 +25,16 @@
     "housekeeper": "bin/housekeeper.js"
   },
   "dependencies": {
+    "body-parser": "^1.15.1",
     "clone": "^1.0.2",
+    "express": "^4.13.4",
+    "express-session": "^1.13.0",
     "fs-promise": "^0.5.0",
-    "hapi": "^13.3.0",
-    "inert": "^3.2.0",
+    "httpolyglot": "^0.1.1",
     "promise-debounce": "^1.0.1",
+    "serve-static": "^1.10.2",
     "shortid": "^2.2.6",
     "splitargs": "0.0.7",
     "yamljs": "^0.1.6",
-    "yar": "^7.0.0"
   }
 }
