@@ -35,6 +35,6 @@
     "serve-static": "^1.10.2",
     "shortid": "^2.2.6",
     "splitargs": "0.0.7",
-    "yamljs": "^0.1.6",
+    "yamljs": "^0.1.6"
   }
 }
